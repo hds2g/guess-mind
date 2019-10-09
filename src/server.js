@@ -5,10 +5,13 @@ import logger from "morgan";
 
 const PORT = 4000;
 const app = express();
+
 app.set("view engine", "pug");
 app.set("views", join(__dirname, "views"));
+
 app.use(express.static(join(__dirname, "static")));
 app.use(logger("dev"));
+
 app.get("/", (req, res) => res.render("home"));
 
 const handleListening = () => {
@@ -18,10 +21,21 @@ const handleListening = () => {
 const server = app.listen(PORT, handleListening);
 const io = socketIO.listen(server);
 
-let sockets = [];
+//let sockets = [];
 
 io.on("connection", socket => {
-  sockets.push(socket.id);
+  //sockets.push(socket.id);
+  socket.on("newMessage", ({ message }) => {
+    //console.log(message);
+    socket.broadcast.emit("messageNotif", {
+      message,
+      nickname: socket.nickName || "Anon"
+    });
+  });
+
+  socket.on("setNickName", ({ nickname }) => {
+    socket.nickName = nickname;
+  });
 });
 
-setInterval(() => console.log(sockets), 1000);
+//setInterval(() => console.log(sockets), 1000);
