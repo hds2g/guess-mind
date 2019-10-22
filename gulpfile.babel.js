@@ -29,12 +29,6 @@ const styles = () =>
   gulp
     .src(paths.styles.src)
     .pipe(sass())
-    .pipe(
-      autoprefixer({
-        browsers: ["last 2 versions"],
-        cascade: false
-      })
-    )
     .pipe(minifyCSS())
     .pipe(gulp.dest(paths.styles.dest));
 
